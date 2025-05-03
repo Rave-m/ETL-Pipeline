@@ -16,7 +16,6 @@ d:\ML\ETL-scraping\
 │   ├── test_extract.py  # Tests for extraction
 │   ├── test_transform.py# Tests for transformation
 │   └── test_load.py     # Tests for loading
-├── testETL.py           # Main test runner
 └── main.py              # Main ETL script
 ```
 
@@ -39,11 +38,11 @@ d:\ML\ETL-scraping\
 2. Create and activate a virtual environment:
 
    ```bash
-   python -m venv venv
+   python -m venv .venv
    # Windows
-   venv\Scripts\activate
+   .venv\Scripts\activate
    # Linux/MacOS
-   source venv/bin/activate
+   source .venv/bin/activate
    ```
 
 3. Install dependencies:
@@ -79,7 +78,7 @@ You can modify the following parameters in main.py:
 To run the complete test suite:
 
 ```bash
-python testETL.py
+pytest -v test/
 ```
 
 ### Run Individual Test Files
