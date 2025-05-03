@@ -5,7 +5,6 @@ This project implements an ETL (Extract, Transform, Load) pipeline for scraping 
 ## Directory Structure
 
 ```
-d:\ML\ETL-scraping\
 ├── utils/               # Core ETL functionality
 │   ├── __init__.py      # Package initialization
 │   ├── extract.py       # Web scraping functionality
