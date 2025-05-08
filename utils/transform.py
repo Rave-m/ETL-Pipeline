@@ -17,11 +17,19 @@ def transform_data(data, exchange_rate):
     
     # Menghapus kolom redundan
     data = data.drop(columns=['Price'])
+    print(f"\n {'-'*20}")
+    print(f"jumlah data duplicated: {data.duplicated().sum()}")
+    data  = data.drop_duplicates()
+    print(f"jumlah data duplicated: {data.duplicated().sum()}")
+    print(f"{'-'*20} \n")
     
     # Transformasi Tipe Data
     data['Title'] = data['Title'].astype('string')
     data['Gender'] = data['Gender'].astype('string')
     data['Color'] = data['Color'].astype(int)
     data['Size'] = data['Size'].astype('string')
+    
+
+    # data = data.drop_duplicates(inplace=True)
     
     return data

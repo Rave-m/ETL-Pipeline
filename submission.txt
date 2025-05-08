@@ -1,0 +1,112 @@
+# ETL Pipeline Project: Setup and Operation Guide
+
+## Setting Up the Project Environment
+
+### Installation Steps
+
+1. Create and activate a Python virtual environment:
+   ```bash
+   python -m venv .venv
+
+   # On Windows:
+   .venv\Scripts\activate
+
+   # On Linux/macOS:
+   source .venv/bin/activate
+   ```
+
+2. Install required dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+3. Set up PostgreSQL database:
+   - Create a database named `fashiondb`
+   - Default connection: `postgresql+psycopg2://postgres:inipassword@localhost:5432/fashiondb`
+   - If needed, modify the database connection string in main.py
+
+## Running the ETL Pipeline
+
+The ETL pipeline consists of three main steps:
+1. **Extract**: Scrapes fashion data from a website
+2. **Transform**: Processes the data (converts prices, standardizes types)
+3. **Load**: Stores the data in PostgreSQL
+
+To run the complete pipeline:
+
+```bash
+python main.py
+```
+
+This will:
+- Scrape fashion products from the configured website
+- Transform the data and convert prices using an exchange rate of 16000
+- Save data to both a CSV file (`fashion_data.csv`) and the PostgreSQL database
+- Display progress information in the console
+
+## Running Unit Tests
+
+### Complete Test Suite
+
+Run all tests with:
+
+```bash
+pytest -v test/
+```
+
+### Individual Test Components
+
+Test extraction functionality:
+```bash
+pytest -v test/test_extract.py
+```
+
+Test transformation functionality:
+```bash
+pytest -v test/test_transform.py
+```
+
+Test loading functionality:
+```bash
+pytest -v test/test_load.py
+```
+
+### Alternative Test Execution
+
+Each test module can also be run directly:
+```bash
+python test/test_extract.py
+python test/test_transform.py
+python test/test_load.py
+```
+
+## Measuring Test Coverage
+
+1. Install the coverage tool:
+   ```bash
+   pip install pytest-cov
+   ```
+
+2. Run tests with coverage:
+   ```bash
+   pytest --cov=utils test/
+   ```
+
+3. Generate a detailed HTML coverage report:
+   ```bash
+   pytest --cov=utils --cov-report=html test/
+   ```
+   This creates an `htmlcov` directory. Open `htmlcov/index.html` in a browser to view the report.
+
+4. View coverage for specific modules:
+   ```bash
+   # Coverage for extraction only
+   pytest --cov=utils.extract test/test_extract.py
+   ```
+
+## Troubleshooting
+
+- **Database Connection Issues**: Verify PostgreSQL service is running and credentials are correct
+- **Scraping Errors**: Check internet connection and website availability
+- **Import Errors**: Ensure virtual environment is activated and all dependencies installed
+- **Test Failures**: Check the error messages for specific information about failing tests
