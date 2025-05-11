@@ -1,4 +1,4 @@
-from utils import scrape_fashion, transform_data, store_to_postgre, transform_to_DataFrame
+from utils import scrape_fashion, transform_data, store_to_postgre, transform_to_DataFrame, store_to_csv
 import csv
 
 def main():
@@ -21,11 +21,8 @@ def main():
 
             print("DataFrame:\n", DataFrame.head())  # Menampilkan 5 data teratas untuk verifikasi
             
-            with open('fashion_data.csv', 'w', newline='', encoding='utf-8') as csvfile:
-                writer = csv.writer(csvfile)
-                writer.writerow(DataFrame.columns)  # Menulis header
-                for row in DataFrame.itertuples(index=False):
-                    writer.writerow(row)  # Menulis data ke file CSV
+            # Menyimpan data ke CSV
+            store_to_csv(DataFrame, 'fashion_data.csv')  # Menyimpan data ke file CSV
             
             # Menyimpan data ke PostgreSQL
             DATABASE_URL = 'postgresql+psycopg2://postgres:inipassword@localhost:5432/fashiondb'

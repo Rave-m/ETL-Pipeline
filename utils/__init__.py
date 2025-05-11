@@ -7,7 +7,7 @@ from .extract import scrape_fashion, fetching_content, extract_fashion_data
 from .transform import transform_data, transform_to_DataFrame
 
 # Loading functions
-from .load import store_to_postgre
+from .load import store_to_postgre, store_to_csv
 
 # Define what's available when using "from utils import *"
 __all__ = [
@@ -16,5 +16,6 @@ __all__ = [
     'extract_fashion_data',
     'transform_data',
     'transform_to_DataFrame',
-    'store_to_postgre'
+    'store_to_postgre',
+    'store_to_csv'
 ]

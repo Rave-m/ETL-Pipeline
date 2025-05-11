@@ -35,7 +35,27 @@ def test_store_to_postgre(mock_create_engine):
         # Verify to_sql was called once with the correct parameters
         mock_to_sql.assert_called_once()
         mock_to_sql.assert_called_with('fashiontoscrape', con=mock_conn, if_exists='append', index=False)
+
+@patch('pandas.DataFrame.to_csv')
+def test_store_to_csv(mock_to_csv):
+    """Test storing data to CSV"""
+    # Create test data
+    df = pd.DataFrame({
+        "Title": ["Item 1", "Item 2"],
+        "Price_in_dollar": [10.0, 20.0],
+        "Rating": [4.5, 3.0]
+    })
     
+    # Define test file path
+    test_file_path = "test_fashion_data.csv"
+    
+    # Call function
+    from utils.load import store_to_csv
+    store_to_csv(df, test_file_path)
+    
+    # Assertions
+    mock_to_csv.assert_called_once_with(test_file_path, index=False)
+
 if __name__ == "__main__":
     # This allows running the tests directly with python test_load.py
     import pytest
