@@ -32,6 +32,21 @@ The ETL pipeline consists of three main steps:
 2. **Transform**: Processes the data (converts prices, standardizes types)
 3. **Load**: Stores the data in PostgreSQL
 
+### Check Data Quality Before Transformation
+
+To check the data quality before applying transformations:
+
+```bash
+python main.py --check-only
+```
+
+This will:
+- Scrape fashion products from the configured website
+- Display data quality information (missing values, duplicates, data types, etc.)
+- Not perform any transformations or data storage
+
+### Run Complete Pipeline
+
 To run the complete pipeline:
 
 ```bash

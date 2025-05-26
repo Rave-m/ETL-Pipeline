@@ -108,13 +108,12 @@ def scrape_fashion(base_url, delay=2):
         for product in product_elements:
             fashion = extract_fashion_data(product)
             data.append(fashion)
-        
         # Check for next page outside the product loop
         next_button_elem = soup.find('li', class_='next')
         if next_button_elem and 'disabled' not in next_button_elem.get('class', []):
             # Next button exists and is not disabled
             page_number += 1 
-            
+            url = f"{base_url}?page={page_number}"
             print(f"Found next page. Moving to page {page_number}")
             time.sleep(delay)  # Delay before fetching next page
         else:

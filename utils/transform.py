@@ -1,35 +1,81 @@
 import pandas as pd
+import datetime
 
 def transform_to_DataFrame(data):
     """Mengubah data menjadi DataFrame."""
     df = pd.DataFrame(data)
     return df
 
+def check_dirty_data(data):
+    """Memeriksa data kotor seperti null values, duplicates, atau anomali lainnya."""
+    print("\n" + "="*50)
+    print("PEMERIKSAAN DATA KOTOR")
+    print("="*50)
+    
+    # Informasi dasar tentang data
+    print(f"\nJumlah baris dan kolom: {data.shape}")
+    
+    # Cek nilai null/missing
+    print("\nJumlah nilai yang hilang per kolom:")
+    print(data.isnull().sum())
+    
+    # Cek data duplikat
+    duplicates = data.duplicated().sum()
+    print(f"\nJumlah data duplikat: {duplicates}")
+    
+    # Cek tipe data
+    print("\nTipe data per kolom:")
+    print(data.dtypes)
+    
+    # Statistik dasar
+    print("\nStatistik dasar:")
+    print(data.describe(include='all').T)
+    
+    # Cek nilai unik untuk kolom kategorikal
+    print("\nNilai unik untuk beberapa kolom:")
+    categorical_cols = data.select_dtypes(include=['object', 'string']).columns
+    for col in categorical_cols:
+        if len(data[col].unique()) < 20:  # Hanya tampilkan jika nilai unik tidak terlalu banyak
+            print(f"\n{col}: {data[col].unique()}")
+    
+    print("\n" + "="*50)
+    return data
+
 def transform_data(data, exchange_rate):
     """Menggabungkan semua transformasi data menjadi satu fungsi."""
-    # Transformasi Price
-    data['Price_in_dollar'] = data['Price'].replace('[$,]', '', regex=True).astype(float)
+    # Memeriksa data kotor terlebih dahulu
+    check_dirty_data(data)
     
-    data['Rating'] = data['Rating'].astype(float)
+    # Membuat copy eksplisit dari DataFrame untuk menghindari SettingWithCopyWarning
+    data = data.copy()
     
-    # Transformasi Exchange Rate
-    data['Price_in_rupiah'] = (data['Price_in_dollar'] * exchange_rate).astype(float)
+    # Transformasi Price: Membersihkan simbol $ dan koma, lalu mengubah ke numerik
+    data.loc[:, 'Price'] = data['Price'].replace('[$,]', '', regex=True).astype(float)
     
-    # Menghapus kolom redundan
-    data = data.drop(columns=['Price'])
+    # Mengkonversi Rating ke tipe float
+    data.loc[:, 'Rating'] = data['Rating'].astype(float)
+    
+    # Mengkonversi Price dari USD ke IDR (Rupiah) dengan exchange rate
+    data.loc[:, 'Price'] = (data['Price'] * exchange_rate).astype(float)
+    
+    # Menampilkan informasi data duplikat
     print(f"\n {'-'*20}")
     print(f"jumlah data duplicated: {data.duplicated().sum()}")
-    data  = data.drop_duplicates()
+    data = data.drop_duplicates()
     print(f"jumlah data duplicated: {data.duplicated().sum()}")
     print(f"{'-'*20} \n")
-    
     # Transformasi Tipe Data
-    data['Title'] = data['Title'].astype('string')
-    data['Gender'] = data['Gender'].astype('string')
-    data['Color'] = data['Color'].astype(int)
-    data['Size'] = data['Size'].astype('string')
+    data.loc[:, 'Title'] = data['Title'].astype('string')
+    data.loc[:, 'Gender'] = data['Gender'].astype('string')
+    try:
+        data.loc[:, 'Color'] = data['Color'].astype(int)
+    except (ValueError, TypeError):
+        # Jika error, pastikan itu string numerik terlebih dahulu
+        data.loc[:, 'Color'] = pd.to_numeric(data['Color'], errors='coerce').fillna(0).astype(int)
+    data.loc[:, 'Size'] = data['Size'].astype('string')
     
-
-    # data = data.drop_duplicates(inplace=True)
+    # Menambahkan kolom timestamp kapan data diambil dengan format YYYY-MM-DD HH:MM:SS
+    current_time = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    data.loc[:, 'Timestamp'] = current_time
     
     return data

@@ -100,21 +100,39 @@ def test_scrape_fashion(mock_sleep, mock_extract_data, mock_fetch):
         page1_html,  # First page
         page2_html   # Second page
     ]
-    
-    # Configure mock extract data to return dummy product data
-    mock_extract_data.return_value = {
-        "Title": "Mock Product",
-        "Price": "$10.00",
-        "Rating": "4.5",
-        "Color": "3",
-        "Size": "S",
-        "Gender": "Men"
-    }
+      # Configure mock extract data to return dummy product data
+    mock_extract_data.side_effect = [
+        {
+            "Title": "Mock Product 1",
+            "Price": "$10.00",
+            "Rating": "4.5",
+            "Color": "3",
+            "Size": "S",
+            "Gender": "Men"
+        },
+        {
+            "Title": "Mock Product 2",
+            "Price": "$20.00",
+            "Rating": "4.0",
+            "Color": "2",
+            "Size": "M",
+            "Gender": "Women"
+        },
+        {
+            "Title": "Mock Product 3",
+            "Price": "$30.00",
+            "Rating": "3.5",
+            "Color": "4",
+            "Size": "L",
+            "Gender": "Men"
+        }
+    ]
     
     # Call the function
     data = scrape_fashion("https://example.com")
     
     # Assertions
+    print(f"Data length in test: {len(data)}")
     assert len(data) == 3  # 2 products from page 1 + 1 from page 2
     assert mock_fetch.call_count == 2
     assert mock_extract_data.call_count == 3

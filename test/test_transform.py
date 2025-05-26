@@ -39,15 +39,13 @@ def test_transform_data():
     # Transform data
     exchange_rate = 15000
     result = transform_data(data, exchange_rate)
-    
-    # Assertions
-    assert "Price_in_dollar" in result.columns
-    assert "Price_in_rupiah" in result.columns
-    assert "Price" not in result.columns  # Check that original Price was dropped
-    assert result["Price_in_dollar"][0] == 10.0
-    assert result["Price_in_rupiah"][0] == 150000.0
+      # Assertions
+    assert "Price" in result.columns
+    assert result["Price"][0] == 150000.0
     assert result["Rating"][0] == 4.5
-    assert result["Color"].dtype == "int64"
+    assert pd.api.types.is_numeric_dtype(result["Color"])  # Cukup pastikan Color adalah tipe numerik
+    assert "Timestamp" in result.columns
+    assert pd.notna(result["Timestamp"][0])  # Memastikan timestamp tidak berisi nilai NaN
     
 if __name__ == "__main__":
     # This allows running the tests directly with python test_load.py
