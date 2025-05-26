@@ -28,24 +28,26 @@ def test_transform_data():
     """Test data transformation"""
     # Create test DataFrame
     data = pd.DataFrame({
-        "Title": ["Item 1", "Item 2"],
-        "Price": ["$10.00", "$20.00"],
-        "Rating": ["4.5", "3.0"],
-        "Gender": ["Men", "Women"],
-        "Color": ["3", "5"],
-        "Size": ["M", "L"]
+        "Title": ["Item 1", "Item 2", "Item 3"],
+        "Price": ["$10.00", "$20.00", "$30.00"],
+        "Rating": ["4.5", "3.0", "0.0"],
+        "Gender": ["Men", "Women", "Unisex"],
+        "Color": ["3", "5", "2"],
+        "Size": ["M", "L", "S"]
     })
     
     # Transform data
     exchange_rate = 15000
     result = transform_data(data, exchange_rate)
-      # Assertions
+    
+    # Assertions
     assert "Price" in result.columns
     assert result["Price"][0] == 150000.0
     assert result["Rating"][0] == 4.5
     assert pd.api.types.is_numeric_dtype(result["Color"])  # Cukup pastikan Color adalah tipe numerik
     assert "Timestamp" in result.columns
     assert pd.notna(result["Timestamp"][0])  # Memastikan timestamp tidak berisi nilai NaN
+    assert len(result) == 2  # Memastikan baris dengan Rating 0.0 telah dihapus
     
 if __name__ == "__main__":
     # This allows running the tests directly with python test_load.py

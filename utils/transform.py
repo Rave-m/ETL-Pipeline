@@ -51,9 +51,17 @@ def transform_data(data, exchange_rate):
     
     # Transformasi Price: Membersihkan simbol $ dan koma, lalu mengubah ke numerik
     data.loc[:, 'Price'] = data['Price'].replace('[$,]', '', regex=True).astype(float)
-    
     # Mengkonversi Rating ke tipe float
     data.loc[:, 'Rating'] = data['Rating'].astype(float)
+    
+    # Membuang data dengan Rating 0.0
+    rows_before = len(data)
+    data = data[data['Rating'] != 0.0]
+    rows_after = len(data)
+    if rows_before > rows_after:
+        print(f"\n{'-'*20}")
+        print(f"Membuang {rows_before - rows_after} baris dengan Rating 0.0")
+        print(f"{'-'*20}\n")
     
     # Mengkonversi Price dari USD ke IDR (Rupiah) dengan exchange rate
     data.loc[:, 'Price'] = (data['Price'] * exchange_rate).astype(float)
@@ -63,15 +71,13 @@ def transform_data(data, exchange_rate):
     print(f"jumlah data duplicated: {data.duplicated().sum()}")
     data = data.drop_duplicates()
     print(f"jumlah data duplicated: {data.duplicated().sum()}")
-    print(f"{'-'*20} \n")
-    # Transformasi Tipe Data
+    print(f"{'-'*20} \n")    # Transformasi Tipe Data
     data.loc[:, 'Title'] = data['Title'].astype('string')
     data.loc[:, 'Gender'] = data['Gender'].astype('string')
-    try:
-        data.loc[:, 'Color'] = data['Color'].astype(int)
-    except (ValueError, TypeError):
-        # Jika error, pastikan itu string numerik terlebih dahulu
-        data.loc[:, 'Color'] = pd.to_numeric(data['Color'], errors='coerce').fillna(0).astype(int)
+    
+    # Konversi Color dari string ke integer dengan lebih ketat dan pastikan tipe data adalah numerik
+    data['Color'] = pd.to_numeric(data['Color'], errors='coerce').fillna(0).astype(int)
+
     data.loc[:, 'Size'] = data['Size'].astype('string')
     
     # Menambahkan kolom timestamp kapan data diambil dengan format YYYY-MM-DD HH:MM:SS
